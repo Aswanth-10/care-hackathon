@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Patients - HealthCare Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #1a73e8;
+            --primary-dark: #0d47a1;
+            --primary-light: #e3f2fd;
+            --secondary: #e53935;
+            --secondary-light: #ffebee;
+            --success: #2e7d32;
+            --success-light: #e8f5e9;
+            --warning: #f57c00;
+            --warning-light: #fff8e1;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333;
+            --text: #37474f;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        body {
+            background-color: #f0f4f8;
+            color: var(--text);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #3949ab, #1e88e5);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            color: white;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .logo span {
+            color: #ffeb3b;
+        }
+        
+        .logo-icon {
+            margin-right: 10px;
+            font-size: 28px;
+            color: white;
+        }
+        
+        .menu {
+            display: flex;
+            list-style: none;
+        }
+        
+        .menu li {
+            margin-left: 20px;
+        }
+        
+        .menu a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+        }
+        
+        .menu a:hover {
+            opacity: 1;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .menu a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            opacity: 1;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .user-profile:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+        }
+        
+        main {
+            padding: 30px 0;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to right, #f8fafd, white);
+        }
+        
+        .card-header h2 {
+            font-size: 18px;
+            color: var(--dark-gray);
+            position: relative;
+            padding-left: 15px;
+        }
+        
+        .card-header h2::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 18px;
+            background: linear-gradient(to bottom, var(--primary), var(--primary-dark));
+            border-radius: 2px;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .search-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .search-box {
+            flex-grow: 1;
+            display: flex;
+        }
+        
+        .search-box input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px 0 0 6px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            min-width: 300px;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.1);
+        }
+        
+        .search-box button {
+            border-radius: 0 6px 6px 0;
+            padding: 0 20px;
+        }
+        
+        .filter-container {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .filter-select {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: white;
+            min-width: 150px;
+        }
+        
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 2px 5px rgba(26, 115, 232, 0.3);
+        }
+        
+        .btn-primary:hover {
+            box-shadow: 0 4px 8px rgba(26, 115, 232, 0.4);
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background-color: #f1f3f4;
+            color: var(--dark-gray);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e8eaed;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #2e7d32, #1b5e20);
+            color: white;
+            box-shadow: 0 2px 5px rgba(46, 125, 50, 0.3);
+        }
+        
+        .btn-success:hover {
+            box-shadow: 0 4px 8px rgba(46, 125, 50, 0.4);
+            transform: translateY(-1px);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            font-weight: 600;
+            color: var(--dark-gray);
+            background-color: #f8fafd;
+        }
+        
+        tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        tbody tr:hover {
+            background-color: #f5f9ff;
+        }
+        
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .status-active {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .status-inactive {
+            background-color: #f5f5f5;
+            color: #757575;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 5px;
+        }
+        
+        .pagination-item {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: white;
+            border: 1px solid #eee;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .pagination-item:hover {
+            background-color: var(--primary-light);
+            border-color: var(--primary);
+        }
+        
+        .pagination-item.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .results-info {
+            margin-top: 15px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="navbar">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                        </svg>
+                    </div>
+                    Health<span>Care</span>
+                </div>
+                <ul class="menu">
+                    <li><a href="#">Dashboard</a></li>
+                    <li><a href="#" class="active">Patients</a></li>
+                    <li><a href="#">Appointments</a></li>
+                    <li><a href="#">Prescriptions</a></li>
+                    <li><a href="#">Doctors</a></li>
+                    <li><a href="#">Reports</a></li>
+                    <li><a href="#">Settings</a></li>
+                </ul>
+                <div class="user-profile">
+                    <img src="/api/placeholder/40/40" alt="User Profile">
+                    <span>Dr. John Smith</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Patient Search Results</h2>
+                    <button class="btn btn-secondary" onclick="navigateTo('healthcare-management-system (1).html')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m12 19-7-7 7-7"></path>
+                            <path d="M5 12h14"></path>
+                        </svg>
+                        Back to Dashboard
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="search-container">
+                        <div class="search-box">
+                            <input type="text" placeholder="Search by name, ID, phone, or email..." value="smith">
+                            <button class="btn btn-primary">Search</button>
+                        </div>
+                        <div class="filter-container">
+                            <select class="filter-select">
+                                <option value="all">All Patients</option>
+                                <option value="active">Active Patients</option>
+                                <option value="inactive">Inactive Patients</option>
+                            </select>
+                            <select class="filter-select">
+                                <option value="all">All Insurance</option>
+                                <option value="medicare">Medicare</option>
+                                <option value="medicaid">Medicaid</option>
+                                <option value="private">Private Insurance</option>
+                                <option value="self">Self Pay</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="results-info">
+                        Found 3 patients matching "smith"
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Patient ID</th>
+                                <th>Name</th>
+                                <th>DOB</th>
+                                <th>Contact</th>
+                                <th>Last Visit</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>PT-7823</td>
+                                <td>Jennifer Smith</td>
+                                <td>04/18/1985</td>
+                                <td>(555) 123-4567</td>
+                                <td>Mar 05, 2025</td>
+                                <td><span class="status status-active">Active</span></td>
+                                <td class="action-buttons">
+                                    <button class="btn btn-success">View</button>
+                                    <button class="btn btn-primary">Edit</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PT-6547</td>
+                                <td>Robert Smith</td>
+                                <td>11/23/1972</td>
+                                <td>(555) 987-6543</td>
+                                <td>Feb 12, 2025</td>
+                                <td><span class="status status-active">Active</span></td>
+                                <td class="action-buttons">
+                                    <button class="btn btn-success">View</button>
+                                    <button class="btn btn-primary">Edit</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PT-5823</td>
+                                <td>Daniel Smith</td>
+                                <td>07/30/1990</td>
+                                <td>(555) 789-1234</td>
+                                <td>Jan 17, 2025</td>
+                                <td><span class="status status-inactive">Inactive</span></td>
+                                <td class="action-buttons">
+                                    <button class="btn btn-success">View</button>
+                                    <button class="btn btn-primary">Edit</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="pagination">
+                        <div class="pagination-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                        </div>
+                        <div class="pagination-item active">1</div>
+                        <div class="pagination-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+    </script>
+</body>
+</html>
